@@ -1,4 +1,4 @@
-resource "aws_iam_policy" "policy" {
+resource "aws_iam_policy" "alb" {
   name        =  "${var.env}-eks-alb-policy"
   path        =  "/"
   description =  "${var.env}-eks-policy"
@@ -255,8 +255,9 @@ locals {
 
 
 #Creating AWS IAM Role
-resource "aws_iam_role" "role" {
+resource "aws_iam_role" "alb" {
   name = "${var.env}-eks-alb-role"
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -277,4 +278,10 @@ resource "aws_iam_role" "role" {
       }
     ]
   })
+}
+
+#Attaching IAM Policy To IAM Role
+resource "aws_iam_role_policy_attachment" "alb-role-attach" {
+  policy_arn = aws_iam_policy.alb.arn
+  role       = aws_iam_role.alb.name
 }
