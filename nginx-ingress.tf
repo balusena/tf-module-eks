@@ -1,3 +1,4 @@
+#Creating AWS IAM Policy for EKS ALB
 resource "aws_iam_policy" "alb" {
   name        =  "${var.env}-eks-alb-policy"
   path        =  "/"
@@ -247,14 +248,14 @@ resource "aws_iam_policy" "alb" {
   })
 }
 
-
+#Fetching AWS Caller Identity Information for Terraform Configuration Settings
 data "aws_caller_identity" "current" {}
 locals {
   issuer = element(split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer), 4)
 }
 
 
-#Creating AWS IAM Role
+#Creating AWS IAM Role for ALB
 resource "aws_iam_role" "alb" {
   name = "${var.env}-eks-alb-role"
 
