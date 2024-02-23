@@ -250,33 +250,33 @@ resource "aws_iam_policy" "policy" {
   )
 }
 
-data "awsutils_caller_identity" "current" {}
-locals {
-  issuer = element(split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer), 4)
-}
-
-
-#Creating AWS IAM Role
-resource "aws_iam_role" "role" {
-  name = "${var.env}-eks-alb-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Sid       = ""
-        Principal = {
-          "Federated" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${local.issuer}"
-        },
-        "Action" : "sts:AssumeRoleWithWebIdentity",
-        "Condition" : {
-          "StringEquals" : {
-            "oidc.eks.us-east-1.amazonaws.com/id/${local.issuer}:aud" : "sts.amazonaws.com",
-            "oidc.eks.us-east-1.amazonaws.com/id/${local.issuer}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
-          }
-        }
-      }
-    ]
-  })
-}
+#data "awsutils_caller_identity" "current" {}
+#locals {
+#  issuer = element(split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer), 4)
+#}
+#
+#
+##Creating AWS IAM Role
+#resource "aws_iam_role" "role" {
+#  name = "${var.env}-eks-alb-role"
+#  assume_role_policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [
+#      {
+#        Action    = "sts:AssumeRole"
+#        Effect    = "Allow"
+#        Sid       = ""
+#        Principal = {
+#          "Federated" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${local.issuer}"
+#        },
+#        "Action" : "sts:AssumeRoleWithWebIdentity",
+#        "Condition" : {
+#          "StringEquals" : {
+#            "oidc.eks.us-east-1.amazonaws.com/id/${local.issuer}:aud" : "sts.amazonaws.com",
+#            "oidc.eks.us-east-1.amazonaws.com/id/${local.issuer}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
+#          }
+#        }
+#      }
+#    ]
+#  })
+#}
