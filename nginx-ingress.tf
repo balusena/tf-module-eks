@@ -286,3 +286,25 @@ resource "aws_iam_role_policy_attachment" "alb-role-attach" {
   policy_arn = aws_iam_policy.alb.arn
   role       = aws_iam_role.alb.name
 }
+
+resource "local_file" "sa" {
+  content = templatefile("${path.module}/sa.yaml", {role_arn = aws_iam_role.alb.arn})
+  filename = "${path.module}/sa-final.yaml"
+}
+
+resource "null_resource" "null" {
+
+  triggers = {
+    always = timestamp()
+  }
+
+  depends_on = [
+    local_file.sa,
+    aws_eks_cluster.eks
+  ]
+  provisioner "local-exec" {
+    command = <<EOF
+aws eks update-kubeconfig --name ${var.env}-eks
+EOF
+  }
+}
