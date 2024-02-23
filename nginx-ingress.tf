@@ -288,8 +288,8 @@ resource "aws_iam_role_policy_attachment" "alb-role-attach" {
 }
 
 resource "local_file" "sa" {
-  content = templatefile("${path.module}/sa.yaml", {role_arn = aws_iam_role.alb.arn})
-  filename = "${path.module}/sa-final.yaml"
+  content = templatefile("${path.module}/sa.yml", { role_arn = aws_iam_role.alb.arn })
+  filename = "${path.module}/sa-final.yml"
 }
 
 resource "null_resource" "null" {
