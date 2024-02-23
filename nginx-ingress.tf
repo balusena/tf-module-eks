@@ -248,7 +248,7 @@ resource "aws_iam_policy" "policy" {
 }
 
 
-data "awsutils_caller_identity" "current" {}
+data "aws_caller_identity" "current" {}
 locals {
   issuer = element(split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer), 4)
 }
