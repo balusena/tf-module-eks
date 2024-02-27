@@ -62,12 +62,10 @@ resource "aws_iam_policy" "sa-policy" {
   description = "$eks-${var.env}-ssm-pm-policy"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
+    "Version": "2012-10-17"
     "Statement": [
       {
-        "Sid": "VisualEditor0",
-        "Effect": "Allow",
-        "Action": [
+        "Action" : [
           "ssm:GetParameterHistory",
           "ssm:GetParametersByPath",
           "ssm:GetParameters",
@@ -75,10 +73,17 @@ resource "aws_iam_policy" "sa-policy" {
           "ssm:DescribeParameters",
           "kms:Decrypt"
         ],
-        "Resource": [
+        "Effect" : "Allow",
+        "Resource" : [
           "arn:aws:ssm:us-east-1:828448425071:parameter/roboshop.*",
-          var.kms_arn
+          "arn:aws:kms:us-east-1:828448425071:key/62bb771a-341f-4c82-b8d9-473959a4a166"
         ]
+      },
+      {
+        "Sid": "VisualEditor0",
+        "Effect": "Allow",
+        "Action": "ssm:DescribeParameters",
+        "Resource": "*"
       }
     ]
   })
