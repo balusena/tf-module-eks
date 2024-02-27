@@ -54,3 +54,56 @@ resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.node-role.name
 }
+
+#Creating AWS IAM Policy
+resource "aws_iam_policy" "sa-policy" {
+  name        = "eks-${var.env}-ssm-pm-policy"
+  path        = "/"
+  description = "$eks-${var.env}-ssm-pm-policy"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "VisualEditor0",
+        "Effect": "Allow",
+        "Action": [
+          "ssm:GetParameterHistory",
+          "ssm:GetParametersByPath",
+          "ssm:GetParameters",
+          "ssm:GetParameter",
+          "ssm:DescribeParameters",
+          "kms:Decrypt"
+        ],
+        "Resource": [
+          "arn:aws:ssm:us-east-1:828448425071:parameter/roboshop.*",
+          var.kms_arn
+        ]
+      }
+    ]
+  })
+}
+
+#Creating AWS IAM Role
+resource "aws_iam_role" "sa-role" {
+  name = "eks-${var.env}-ssm-pm-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+#Attaching IAM Policy To IAM Role
+resource "aws_iam_role_policy_attachment" "policy-attach" {
+  role       = aws_iam_role.sa-role.name
+  policy_arn = aws_iam_policy.sa-policy.arn
+}
