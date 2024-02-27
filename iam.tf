@@ -62,9 +62,11 @@ resource "aws_iam_policy" "sa-policy" {
   description = "$eks-${var.env}-ssm-pm-policy"
 
   policy = jsonencode({
-    "Version": "2012-10-17"
+    "Version": "2012-10-17",
     "Statement": [
       {
+        "Sid": "VisualEditor0",
+        "Effect": "Allow",
         "Action" : [
           "ssm:GetParameterHistory",
           "ssm:GetParametersByPath",
@@ -80,7 +82,7 @@ resource "aws_iam_policy" "sa-policy" {
         ]
       },
       {
-        "Sid": "VisualEditor0",
+        "Sid": "VisualEditor1",
         "Effect": "Allow",
         "Action": "ssm:DescribeParameters",
         "Resource": "*"
